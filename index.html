@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Наше свидание ❤️</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #F5EEE6;
+      font-family: 'Inter', sans-serif;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bg-soft {
+      position: fixed;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 30% 40%, #F3D7CA 0%, transparent 60%),
+                  radial-gradient(circle at 70% 60%, #E6A4B4 0%, transparent 50%),
+                  #F5EEE6;
+      animation: softShift 20s ease-in-out infinite alternate;
+      z-index: 0;
+      opacity: 0.6;
+    }
+
+    @keyframes softShift {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(5%, 3%) scale(1.05); }
+    }
+
+    .dots {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .dot {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: #F3D7CA;
+      border-radius: 50%;
+      opacity: 0.5;
+      animation: floatDot 12s infinite alternate ease-in-out;
+    }
+    @keyframes floatDot {
+      0% { transform: translateY(0) scale(1); opacity: 0.3; }
+      100% { transform: translateY(-60px) scale(1.2); opacity: 0.7; }
+    }
+
+    .hearts-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .heart-float {
+      position: absolute;
+      bottom: -60px;
+      font-size: 20px;
+      color: #E6A4B4;
+      opacity: 0.3;
+      animation: riseHeart 18s linear infinite;
+    }
+    @keyframes riseHeart {
+      0% { transform: translateY(0) rotate(0deg) scale(0.8); opacity: 0.2; }
+      100% { transform: translateY(-120vh) rotate(360deg) scale(1.2); opacity: 0; }
+    }
+
+    /* ── страница ── */
+    .page {
+      display: none;
+      width: 100%;
+      max-width: 540px;
+      padding: 40px 36px;
+      background: #FFF8E3;
+      border-radius: 40px;
+      box-shadow: 0 20px 60px rgba(230, 164, 180, 0.15),
+                  0 8px 24px rgba(0,0,0,0.04);
+      text-align: center;
+      position: relative;
+      z-index: 10;
+      animation: fadeSlide 0.5s ease;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes fadeSlide {
+      0% { opacity: 0; transform: translateY(20px) scale(0.97); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    h1, h2 {
+      font-weight: 700;
+      color: #3d2c33;
+      letter-spacing: -0.3px;
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-size: 2.4rem;
+    }
+    h1 .accent {
+      color: #E6A4B4;
+    }
+    h2 {
+      font-size: 1.7rem;
+      font-weight: 600;
+    }
+
+    p {
+      color: #6b5a62;
+      font-size: 1.05rem;
+      line-height: 1.5;
+      margin-bottom: 28px;
+    }
+
+    .sub {
+      color: #a08a94;
+      font-size: 0.95rem;
+      margin-bottom: 20px;
+    }
+
+    /* ── кнопки ── */
+    button {
+      border: none;
+      border-radius: 60px;
+      padding: 14px 32px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      letter-spacing: 0.2px;
+      font-family: inherit;
+    }
+
+    .yes {
+      background: #E6A4B4;
+      color: #FFF8E3;
+      box-shadow: 0 6px 20px rgba(230, 164, 180, 0.3);
+    }
+    .yes:hover {
+      transform: scale(1.04);
+      box-shadow: 0 10px 28px rgba(230, 164, 180, 0.4);
+    }
+    .yes:active {
+      transform: scale(0.96);
+    }
+
+    /* ── Кнопка "Нет" с плавной анимацией ── */
+    .no {
+      background: transparent;
+      color: #b097a0;
+      border: 1.5px solid #F3D7CA;
+      padding: 12px 28px;
+      min-width: 100px;
+      transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  background 0.3s,
+                  border-color 0.3s,
+                  color 0.3s;
+      will-change: transform;
+    }
+    .no:hover {
+      background: #F3D7CA20;
+      color: #7a5f6b;
+      border-color: #E6A4B4;
+    }
+
+    .next {
+      width: 100%;
+      background: #E6A4B4;
+      color: #FFF8E3;
+      padding: 16px;
+      font-size: 1.1rem;
+      box-shadow: 0 6px 20px rgba(230, 164, 180, 0.25);
+      margin-top: 10px;
+    }
+    .next:hover {
+      transform: scale(1.02);
+      box-shadow: 0 10px 28px rgba(230, 164, 180, 0.35);
+    }
+    .next:active {
+      transform: scale(0.98);
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* ── карточки выбора ── */
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 18px 0 12px;
+    }
+
+    .option-card {
+      background: #FFF8E3;
+      border: 2px solid #F3D7CA;
+      border-radius: 20px;
+      padding: 14px 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: #3d2c33;
+      font-weight: 500;
+      font-size: 0.95rem;
+      position: relative;
+    }
+    .option-card:hover {
+      border-color: #E6A4B4;
+      background: #fffcf5;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(230, 164, 180, 0.15);
+    }
+    .option-card.active {
+      border-color: #E6A4B4;
+      background: #F3D7CA40;
+      box-shadow: 0 0 0 4px #F3D7CA80;
+    }
+    .option-card .icon {
+      font-size: 2rem;
+      line-height: 1;
+    }
+    .option-card .label {
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    .option-card .custom-input {
+      display: none;
+      width: 100%;
+      margin-top: 8px;
+      padding: 8px 12px;
+      border: 1.5px solid #E6A4B4;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      background: #FFF8E3;
+      color: #3d2c33;
+      outline: none;
+      transition: 0.2s;
+    }
+    .option-card .custom-input:focus {
+      box-shadow: 0 0 0 4px #F3D7CA80;
+    }
+    .option-card.show-input .custom-input {
+      display: block;
+    }
+
+    /* ── поля даты и времени ── */
+    .datetime-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin: 16px 0 20px;
+    }
+    .datetime-group label {
+      font-weight: 500;
+      color: #3d2c33;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.95rem;
+      background: #FFF8E3;
+      border: 1.5px solid #F3D7CA;
+      border-radius: 40px;
+      padding: 4px 18px 4px 12px;
+      transition: all 0.25s ease;
+    }
+    .datetime-group label:focus-within {
+      border-color: #E6A4B4;
+      box-shadow: 0 0 0 4px #F3D7CA60;
+    }
+    .datetime-group label .emoji {
+      font-size: 1.4rem;
+      line-height: 1;
+    }
+    .datetime-group input {
+      border: none;
+      background: transparent;
+      padding: 14px 0;
+      font-size: 1rem;
+      font-family: inherit;
+      color: #3d2c33;
+      outline: none;
+      flex: 1;
+      min-width: 0;
+    }
+    .datetime-group input::-webkit-calendar-picker-indicator {
+      filter: invert(0.3) sepia(1) hue-rotate(300deg) saturate(0.5);
+      cursor: pointer;
+    }
+
+    /* ── результат ── */
+    .result {
+      background: #FFF8E3;
+      padding: 24px;
+      border-radius: 30px;
+      border: 1px solid #F3D7CA;
+      color: #3d2c33;
+      font-size: 1.15rem;
+      line-height: 2;
+      margin-top: 12px;
+    }
+    .result .big {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #E6A4B4;
+    }
+
+    /* ── конфетти ── */
+    .confetti-wrap {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 999;
+      overflow: hidden;
+    }
+    .confetti-piece {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      animation: confettiFall linear forwards;
+    }
+    @keyframes confettiFall {
+      0% { transform: translateY(-10vh) rotate(0deg) scale(1); opacity: 0.8; }
+      100% { transform: translateY(110vh) rotate(720deg) scale(0.4); opacity: 0; }
+    }
+
+    /* ── адаптив ── */
+    @media (max-width: 500px) {
+      .page { padding: 32px 20px; }
+      h1 { font-size: 2rem; }
+      h2 { font-size: 1.4rem; }
+      .options-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .option-card { padding: 12px 8px; }
+      .option-card .icon { font-size: 1.6rem; }
+      button { padding: 12px 24px; font-size: 1rem; }
+      .next { padding: 14px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="bg-soft"></div>
+  <div class="dots" id="dots"></div>
+  <div class="hearts-bg" id="heartsBg"></div>
+
+  <!-- Страница 1 -->
+  <div class="page active" id="page1">
+    <h1>Пойдёшь <span class="accent">со мной</span> на свидание?</h1>
+    <p class="sub">У меня есть для тебя важный вопрос 🥰</p>
+    <div class="btn-group">
+      <button class="yes" onclick="nextPage(2)">Да ❤️</button>
+      <button class="no" id="noBtn">Нет 😢</button>
+    </div>
+  </div>
+
+  <!-- Страница 2: место -->
+  <div class="page" id="page2">
+    <h2> Где проведём свидание?</h2>
+    <div class="options-grid" id="placeOptions">
+      <div class="option-card" data-value="Кино" onclick="selectOption(this, 'place')">
+        <span class="icon">🎬</span>
+        <span class="label">Кино</span>
+      </div>
+      <div class="option-card" data-value="Парк" onclick="selectOption(this, 'place')">
+        <span class="icon">🌳</span>
+        <span class="label">Парк</span>
+      </div>
+      <div class="option-card" data-value="Набережная" onclick="selectOption(this, 'place')">
+        <span class="icon">🌅</span>
+        <span class="label">Набережная</span>
+      </div>
+      <div class="option-card" data-value="custom" onclick="selectOption(this, 'place')">
+        <span class="icon">✏️</span>
+        <span class="label">Свой вариант</span>
+        <input class="custom-input" type="text" placeholder="Напиши место..." oninput="onCustomInput(this, 'place')" />
+      </div>
+    </div>
+    <button class="next" onclick="saveAndNext('place', 3)">Далее →</button>
+  </div>
+
+  <!-- Страница 3: еда -->
+  <div class="page" id="page3">
+    <h2> Куда пойдём поесть?</h2>
+    <div class="options-grid" id="foodOptions">
+      <div class="option-card" data-value="Вкусно и точка" onclick="selectOption(this, 'food')">
+        <span class="icon">🍔</span>
+        <span class="label">Вкусно и точка</span>
+      </div>
+      <div class="option-card" data-value="Бургер Кинг" onclick="selectOption(this, 'food')">
+        <span class="icon">🍔</span>
+        <span class="label">Бургер Кинг</span>
+      </div>
+      <div class="option-card" data-value="Пиво" onclick="selectOption(this, 'food')">
+        <span class="icon">🍺</span>
+        <span class="label">Можно по пиву</span>
+      </div>
+      <div class="option-card" data-value="Кофейня" onclick="selectOption(this, 'food')">
+        <span class="icon">☕</span>
+        <span class="label">кофе и что нибудь сладкое</span>
+      </div>
+      <div class="option-card" data-value="custom" onclick="selectOption(this, 'food')">
+        <span class="icon">✏️</span>
+        <span class="label">Свой вариант</span>
+        <input class="custom-input" type="text" placeholder="Напиши что хочешь..." oninput="onCustomInput(this, 'food')" />
+      </div>
+    </div>
+    <button class="next" onclick="saveAndNext('food', 4)">Далее →</button>
+  </div>
+
+  <!-- Страница 4: дата и время -->
+  <div class="page" id="page4">
+    <h2>📅 Выбери дату и время</h2>
+    <div class="datetime-group">
+      <label>
+        <span class="emoji">📅</span>
+        <input type="date" id="date" />
+      </label>
+      <label>
+        <span class="emoji">⏰</span>
+        <input type="time" id="time" />
+      </label>
+    </div>
+    <button class="next" onclick="finishDate()">Подтвердить ❤️</button>
+  </div>
+
+  <!-- Страница 5: финал -->
+  <div class="page" id="page5">
+    <h1>🎉 Ура! 🎉</h1>
+    <div id="result" class="result"></div>
+  </div>
+
+  <div class="confetti-wrap" id="confettiWrap"></div>
+
+  <script>
+    // ─── Telegram ───
+    const TOKEN = "8687995837:AAHDtOulbC9kprI2pzCNkTWhTN2pHaH0zLM";
+    const CHAT_ID = "1322388744";
+
+    // ─── переменные ───
+    let selectedPlace = '';
+    let selectedFood = '';
+    let customPlace = '';
+    let customFood = '';
+
+    // ─── переключение страниц ───
+    function nextPage(page) {
+      document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+      document.getElementById('page' + page).classList.add('active');
+    }
+
+    // ─── выбор карточки ───
+    function selectOption(el, type) {
+      const parent = el.closest('.options-grid');
+      parent.querySelectorAll('.option-card').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+
+      // скрываем все поля ввода
+      parent.querySelectorAll('.custom-input').forEach(inp => {
+        inp.closest('.option-card').classList.remove('show-input');
+      });
+
+      const value = el.dataset.value;
+      if (value === 'custom') {
+        el.classList.add('show-input');
+        const inp = el.querySelector('.custom-input');
+        if (inp) inp.focus();
+        if (type === 'place') {
+          customPlace = inp ? inp.value : '';
+          selectedPlace = 'custom';
+        } else {
+          customFood = inp ? inp.value : '';
+          selectedFood = 'custom';
+        }
+      } else {
+        if (type === 'place') {
+          selectedPlace = value;
+          customPlace = '';
+        } else {
+          selectedFood = value;
+          customFood = '';
+        }
+      }
+    }
+
+    // ─── ввод в custom поле ───
+    function onCustomInput(input, type) {
+      const val = input.value;
+      if (type === 'place') {
+        customPlace = val;
+        if (val.trim() !== '') {
+          const card = input.closest('.option-card');
+          const parent = card.closest('.options-grid');
+          parent.querySelectorAll('.option-card').forEach(c => c.classList.remove('active'));
+          card.classList.add('active');
+          card.classList.add('show-input');
+          selectedPlace = 'custom';
+        }
+      } else {
+        customFood = val;
+        if (val.trim() !== '') {
+          const card = input.closest('.option-card');
+          const parent = card.closest('.options-grid');
+          parent.querySelectorAll('.option-card').forEach(c => c.classList.remove('active'));
+          card.classList.add('active');
+          card.classList.add('show-input');
+          selectedFood = 'custom';
+        }
+      }
+    }
+
+    // ─── сохранение и переход ───
+    function saveAndNext(type, nextPageNum) {
+      let value = '';
+      if (type === 'place') {
+        if (selectedPlace === 'custom') {
+          if (customPlace.trim() === '') {
+            alert('Пожалуйста, напиши своё место 😊');
+            return;
+          }
+          value = customPlace.trim();
+        } else {
+          value = selectedPlace;
+        }
+        if (!value) {
+          alert('Выбери место для свидания 💕');
+          return;
+        }
+        selectedPlace = value;
+      } else {
+        if (selectedFood === 'custom') {
+          if (customFood.trim() === '') {
+            alert('Пожалуйста, напиши, что хочешь поесть 😊');
+            return;
+          }
+          value = customFood.trim();
+        } else {
+          value = selectedFood;
+        }
+        if (!value) {
+          alert('Выбери, где поесть 💕');
+          return;
+        }
+        selectedFood = value;
+      }
+      nextPage(nextPageNum);
+    }
+
+    // ─── Плавное убегание кнопки "Нет" ───
+    const noBtn = document.getElementById('noBtn');
+
+    noBtn.addEventListener('mouseenter', () => {
+      // Случайное смещение в пределах ±200px по X и ±150px по Y
+      const x = (Math.random() - 0.5) * 400;
+      const y = (Math.random() - 0.5) * 300;
+      noBtn.style.transform = `translate(${x}px, ${y}px) scale(0.95)`;
+    });
+
+    noBtn.addEventListener('mouseleave', () => {
+      noBtn.style.transform = 'translate(0, 0) scale(1)';
+    });
+
+    // ─── отправка в Telegram ───
+    async function sendToTelegram(place, food, date, time) {
+      const msg = `❤️ Новое свидание!\n\n📍 ${place}\n🍽️ ${food}\n📅 ${date}\n⏰ ${time}`;
+      try {
+        await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id: CHAT_ID, text: msg })
+        });
+      } catch (e) { console.log(e); }
+    }
+
+    // ─── финал ───
+    async function finishDate() {
+      const date = document.getElementById('date').value;
+      const time = document.getElementById('time').value;
+      if (!date || !time) {
+        alert('Пожалуйста, выбери дату и время 🕒');
+        return;
+      }
+
+      if (!selectedPlace || !selectedFood) {
+        alert('Что-то пошло не так, вернись и выбери место и еду 😊');
+        return;
+      }
+
+      await sendToTelegram(selectedPlace, selectedFood, date, time);
+
+      document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+      document.getElementById('page5').classList.add('active');
+
+      document.getElementById('result').innerHTML = `
+        <div class="big">❤️ Свидание назначено ❤️</div><br>
+        📍 ${selectedPlace}<br>
+        🍽️ ${selectedFood}<br>
+        📅 ${date}<br>
+        ⏰ ${time}<br><br>
+        <p>Ты действительно согласилась! 🥰</p>
+        <p>Буду ждать тебя на этаже</p>
+      `;
+
+      // конфетти
+      const wrap = document.getElementById('confettiWrap');
+      const colors = ['#E6A4B4', '#F3D7CA', '#F5EEE6', '#FFF8E3', '#d4a0b0'];
+      for (let i = 0; i < 100; i++) {
+        const c = document.createElement('div');
+        c.className = 'confetti-piece';
+        c.style.left = Math.random() * 100 + '%';
+        c.style.background = colors[Math.floor(Math.random() * colors.length)];
+        c.style.width = (Math.random() * 8 + 4) + 'px';
+        c.style.height = (Math.random() * 8 + 4) + 'px';
+        c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+        c.style.animationDuration = (Math.random() * 2 + 2) + 's';
+        c.style.animationDelay = (Math.random() * 1.5) + 's';
+        wrap.appendChild(c);
+      }
+      setTimeout(() => wrap.innerHTML = '', 5000);
+    }
+
+    // ─── фоновые элементы ───
+    (function createDots() {
+      const container = document.getElementById('dots');
+      for (let i = 0; i < 45; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'dot';
+        dot.style.left = Math.random() * 100 + '%';
+        dot.style.top = Math.random() * 100 + '%';
+        dot.style.animationDelay = (Math.random() * 10) + 's';
+        dot.style.animationDuration = (Math.random() * 8 + 8) + 's';
+        dot.style.width = (Math.random() * 5 + 3) + 'px';
+        dot.style.height = dot.style.width;
+        container.appendChild(dot);
+      }
+    })();
+
+    (function createHearts() {
+      const container = document.getElementById('heartsBg');
+      const symbols = ['❤️', '💕', '💗', '💖'];
+      for (let i = 0; i < 16; i++) {
+        const el = document.createElement('div');
+        el.className = 'heart-float';
+        el.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+        el.style.left = Math.random() * 100 + '%';
+        el.style.fontSize = (Math.random() * 16 + 16) + 'px';
+        el.style.animationDuration = (Math.random() * 12 + 14) + 's';
+        el.style.animationDelay = (Math.random() * 18) + 's';
+        container.appendChild(el);
+      }
+    })();
+  </script>
+
+</body>
+</html>
